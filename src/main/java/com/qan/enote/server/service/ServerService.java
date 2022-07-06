@@ -1,48 +1,42 @@
 package com.qan.enote.server.service;
 
-import com.qan.enote.client.service.ClientHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerService {
 
-    private final ServerSocket serverSocket;
+    public static final int NUM_OF_THREAD = 4;
+    public final static int SERVER_PORT = 7;
 
-    public ServerService(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
-
-    public void startServer() {
+    public static void main(String[] args) throws IOException {
+        ExecutorService executor = Executors.newFixedThreadPool(NUM_OF_THREAD);
+        ServerSocket serverSocket = null;
         try {
-            // Listen for connections (clients to connect) on port 1234.
-            while (!serverSocket.isClosed()) {
-                // Will be closed in the Client Handler.
-                Socket socket = serverSocket.accept();
-                System.out.println("A new client has connected!");
-                ClientHandler clientHandler = new ClientHandler(socket);
-                Thread thread = new Thread(clientHandler);
-                thread.start();
+            System.out.println("Binding to port " + SERVER_PORT + ", please wait  ...");
+            serverSocket = new ServerSocket(SERVER_PORT);
+            System.out.println("Server started: " + serverSocket);
+            System.out.println("Waiting for a client ...");
+            while (true) {
+                try {
+                    Socket socket = serverSocket.accept();
+                    System.out.println("Client accepted: " + socket);
+
+                    WorkerThread handler = new WorkerThread(socket);
+                    executor.execute(handler);
+                } catch (IOException e) {
+                    System.err.println(" Connection Error: " + e);
+                }
             }
-        } catch (IOException e) {
-            closeServerSocket();
-        }
-    }
-
-    // Close the server socket gracefully.
-    public void closeServerSocket() {
-        try {
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } finally {
             if (serverSocket != null) {
                 serverSocket.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(1234);
-        ServerService server = new ServerService(serverSocket);
-        server.startServer();
-    }
 }
