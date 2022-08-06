@@ -34,4 +34,22 @@ public class AccountService {
         }
         return res;
     }
+
+    public static Boolean addOne(Account acc){
+        ConnectDB cn = new ConnectDB();
+        Connection connection = cn.getConnection();
+        PreparedStatement ps = null;
+        String query = "INSERT INTO ACCOUNT VALUES(?,?)";
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setString(1, acc.getUsername());
+            String hash = BCrypt.hashpw(acc.getPassword(), BCrypt.gensalt(13));
+            ps.setString(2, hash);
+            ps.execute();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }
