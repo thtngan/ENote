@@ -37,4 +37,9 @@ public class EnoteImpl extends UnicastRemoteObject implements IEnote {
         return 0;
     }
 
+    @Override
+    public boolean signUp(String username, String pwd) throws RemoteException {
+        Account account = new Account(username, pwd);
+        return AccountService.addOne(account);
+    }
 }
