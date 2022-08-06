@@ -2,7 +2,7 @@ package BE.Service;
 
 import BE.Model.Account;
 import BE.Shared.ConnectDB;
-//import org.mindrot.jbcrypt.BCrypt;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
