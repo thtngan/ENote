@@ -21,11 +21,11 @@ ON [PRIMARY]
 GO
 
 CREATE TABLE NOTE (
-                      ID INT,
-                      Name VARCHAR(50),
+                      ID VARCHAR(50),
                       Type VARCHAR(50),
                       Content VARCHAR(50),
                       Username_ID VARCHAR(100),
+					  Create_Time TIMESTAMP,
                       CONSTRAINT PK_ID PRIMARY KEY CLUSTERED (ID)
 )
 
@@ -38,3 +38,6 @@ INSERT INTO NOTE VALUES(1, 'hello', 'txt', '0x9473FBCCBC01AF', 'username')
 
 SELECT * FROM ACCOUNT
 SELECT * FROM NOTE
+
+DELETE FROM NOTE WHERE USERNAME_ID = 'username'
+DELETE FROM ACCOUNT WHERE USERNAME = 'username'
