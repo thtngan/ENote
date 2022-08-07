@@ -18,8 +18,6 @@ public class LogIn extends JFrame implements Runnable {
     private CommonBus common_bus;
     private IEnote enote_obj;
 
-    private SignUp signUp;
-
     public LogIn(ClientPanel client_panel, CommonBus common_bus) {
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setTitle("E-NOTE APPLICATION");
@@ -102,7 +100,9 @@ public class LogIn extends JFrame implements Runnable {
 
             switch (loginProcess) {
                 case 0:
-                    System.out.println("Log in successfull");
+                    System.out.println("Log in successful");
+                    ListNote listNote = new ListNote(this.client_panel, this.common_bus, username);
+                    listNote.setVisible(true);
                     break;
                 case 1:
                     JOptionPane.showMessageDialog(this,"Username is not exist","Error",JOptionPane.WARNING_MESSAGE);
@@ -110,9 +110,6 @@ public class LogIn extends JFrame implements Runnable {
                 case 2:
                     JOptionPane.showMessageDialog(this,"Wrong password","Error",JOptionPane.WARNING_MESSAGE);
                     break;
-                default:
-                    //Open menu
-                    System.out.println("Log in successfull");
             }
 
 
