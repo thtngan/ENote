@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.regex.Pattern;
 
 public class SignUp extends JFrame implements Runnable {
     public final static int WIDTH_DIALOG = 380;
@@ -76,14 +77,11 @@ public class SignUp extends JFrame implements Runnable {
         btnSignUp.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!txtPassword.getText().equals(txtPassword1.getText())) {
-                    pwdNotMatch();
-                } else {
+                if(checkValid(txtUsername.getText(), txtPassword.getText(), txtPassword1.getText())) {
                     String username = txtUsername.getText();
                     String password = txtPassword.getText();
                     signUpMousePressed(username, password);
                 }
-
             }
         });
         this.add(btnSignUp);
@@ -94,19 +92,29 @@ public class SignUp extends JFrame implements Runnable {
 
     }
 
-    private void pwdNotMatch() {
-        JOptionPane.showMessageDialog(this,"Password are not match","Error",JOptionPane.OK_OPTION);
+    private boolean checkValid(String username, String pwd, String rePwd) {
+        // TODO: check not null
+        if (username.isEmpty() || pwd.isEmpty() || rePwd.isEmpty()) {
+            JOptionPane.showMessageDialog(this,"Username and password can not be null","Error",JOptionPane.OK_OPTION);
+            return false;
+        }
+
+        if (!pwd.equals(rePwd)) {
+            JOptionPane.showMessageDialog(this,"Password are not match","Error",JOptionPane.OK_OPTION);
+            return false;
+        }
+        return true;
     }
 
     // TODO: sign up
     private void signUpMousePressed(String username, String password) {
         try {
-            boolean signUpProcess = this.enote_obj.signUp(username, password);
-            if (signUpProcess == true) {
-                JOptionPane.showMessageDialog(this,"Created a new account","Success",JOptionPane.YES_OPTION);
+            String signUpProcess = this.enote_obj.signUp(username, password);
+            if (signUpProcess.equals("Success")) {
+                JOptionPane.showMessageDialog(this, signUpProcess,"Success",JOptionPane.OK_OPTION);
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this,"Created account errored","Success",JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.showMessageDialog(this, signUpProcess,"Error",JOptionPane.OK_CANCEL_OPTION);
             }
 
         } catch (RemoteException e) {
